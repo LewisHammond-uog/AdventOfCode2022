@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <map>
+#include <stdio.h>
 
 int main()
 {
@@ -22,24 +24,30 @@ int main()
         return -1;
     }
 
-    std::vector<int> elfs;
+    int elfID = 0;
+    std::vector<int> elfs; 
     int currentCalories = 0; //current count
     while (getline(inFile, lineString)) 
     { 
         //Empty line indicates new "elf"
         if (lineString.empty()) {
             elfs.push_back(currentCalories);
+
             currentCalories = 0;
+            ++elfID;
         }
 
         //Add to the current count
         currentCalories += atoi(lineString.c_str());
     }
 
-    //Find the max
-    int max = *std::max_element(elfs.begin(), elfs.end());
+    std::sort(elfs.begin(), elfs.end());
 
-    std::cout << "MAX is " << max << std::endl;
+    int one = elfs[elfs.size() - 1];
+    int two = elfs[elfs.size() - 2];
+    int three = elfs[elfs.size() - 3];
+
+    std::cout << one + two + three << std::endl;
 
     return 0;
 }
