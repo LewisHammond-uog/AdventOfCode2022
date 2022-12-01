@@ -45,15 +45,14 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <map>
-#include <stdio.h>
 
 int main()
 {
     std::string lineString;
     std::ifstream inFile;
 
-    inFile.open("C:/Users/LewisHammond/Desktop/SelfDev/AdventOfCode/input.txt");
+    inFile.open("input.txt");
+    
 
     if (!inFile.is_open()) 
     {
