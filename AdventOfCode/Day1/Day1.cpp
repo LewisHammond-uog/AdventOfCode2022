@@ -66,13 +66,14 @@ int main()
         //Empty line indicates new "elf"
         if (lineString.empty()) {
             elfCalCounts.push_back(currentCalories);
-
             currentCalories = 0;
         }
 
         //Add to the current count
         currentCalories += atoi(lineString.c_str());
     }
+
+    inFile.close();
 
     std::sort(elfCalCounts.begin(), elfCalCounts.end());
 
@@ -86,7 +87,8 @@ int main()
         topSum += elfCalCounts[elfCalCounts.size() - i];
     }
 
-    std::cout << topSum << std::endl;
+    std::cout << "TOP Overall Cals: " << elfCalCounts[elfCalCounts.size() - 1] << std::endl;
+    std::cout << "TOP " << TOP_COUNT << " Cals: " << topSum << std::endl;
 
     return 0;
 }
