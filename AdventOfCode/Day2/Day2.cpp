@@ -23,6 +23,22 @@ The third round is a draw with both players choosing Scissors, giving you a scor
 In this example, if you were to follow the strategy guide, you would get a total score of 15 (8 + 1 + 6).
 
 What would your total score be if everything goes exactly according to your strategy guide ?
+
+Your puzzle answer was 13221.
+
+--- Part Two ---
+The Elf finishes helping with the tent and sneaks back over to you. "Anyway, the second column says how the round needs to end: X means you need to lose, Y means you need to end the round in a draw, and Z means you need to win. Good luck!"
+
+The total score is still calculated in the same way, but now you need to figure out what shape to choose so the round ends as indicated. The example above now goes like this:
+
+In the first round, your opponent will choose Rock (A), and you need the round to end in a draw (Y), so you also choose Rock. This gives you a score of 1 + 3 = 4.
+In the second round, your opponent will choose Paper (B), and you choose Rock so you lose (X) with a score of 1 + 0 = 1.
+In the third round, you will defeat your opponent's Scissors with Rock for a score of 1 + 6 = 7.
+Now that you're correctly decrypting the ultra top secret strategy guide, you would get a total score of 12.
+
+Following the Elf's instructions for the second column, what would your total score be if everything goes exactly according to your strategy guide?
+
+Your puzzle answer was 13131.
 */
 
 #include <iostream>
@@ -64,13 +80,15 @@ enum class State
 
 std::map<Items, int> itemToScore = { {Items::Rock, ROCK_SCORE}, {Items::Paper, PAPER_SCORE}, {Items::Scisors, SCISSORS_SCORE} };
 
-std::map<std::string, Items> charToItem = { {"A", Items::Rock},  {"B", Items::Paper}, {"C", Items::Scisors},
-                                            {"X", Items::Rock }, { "Y", Items::Paper }, { "Z", Items::Scisors }};
+std::map<std::string, Items> charToItem = { {"A", Items::Rock},  {"B", Items::Paper}, {"C", Items::Scisors} };
+std::map<std::string, State> charToMatchState = { {"X", State::Lose},  {"Y", State::Draw}, {"Z", State::Win} };
 
 //Get the winning item for a given item
-std::map<Items, Items> GetCounterItem = { {Items::Rock, Items::Paper}, {Items::Paper, Items::Scisors}, {Items::Scisors, Items::Rock} };
+std::map<Items, Items> counterItem = { {Items::Rock, Items::Paper}, {Items::Paper, Items::Scisors}, {Items::Scisors, Items::Rock} };
+//Get the losing item for a given item
+std::map<Items, Items> loseItem = { {Items::Rock, Items::Scisors}, {Items::Paper, Items::Rock}, {Items::Scisors, Items::Paper} };
 
-State GetMatchResult(Items elfItem, Items playerItem);
+Items GetItemToAchiveResult(State result, Items elfItem);
 
 int main()
 {
@@ -89,21 +107,22 @@ int main()
     while (inFile >> elfPlay >> playerPlay)
     {
         Items elfItem = charToItem[elfPlay];
-        Items playerItem = charToItem[playerPlay];
+
+        State targetState = charToMatchState[playerPlay];
+
+        Items playerItem = GetItemToAchiveResult(targetState, elfItem);
 
         totalScore += itemToScore[playerItem];
 
-        State playerState = GetMatchResult(elfItem, playerItem);
-
-        if (playerState == State::Win) 
+        if (targetState == State::Win) 
         {
             totalScore += WIN_SCORE;
         }
-        else if (playerState == State::Draw) 
+        else if (targetState == State::Draw)
         {
             totalScore += DRAW_SCORE;
         }
-        else if (playerState == State::Draw)
+        else if (targetState == State::Draw)
         {
             totalScore += LOSE_SCORE;
         }
@@ -114,14 +133,17 @@ int main()
     inFile.close();
 }
 
-State GetMatchResult(Items elfItem, Items playerItem) 
+Items GetItemToAchiveResult(State result, Items elfItem) 
 {
-    if (elfItem == playerItem) {
-        return State::Draw;
-    }
-    else if (playerItem == GetCounterItem[elfItem]) { //If the player playeed the counter to the elf item
-        return State::Win;
+    std::vector<Items> items = { Items::Paper, Items::Rock, Items::Scisors };
+    
+    if (result == State::Draw) {
+        return elfItem;
     }
 
-    return State::Lose;
+    if (result == State::Win) {
+        return counterItem[elfItem];
+    }
+
+    return loseItem[elfItem];
 }
