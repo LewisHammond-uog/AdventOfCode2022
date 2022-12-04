@@ -17,7 +17,8 @@ int main()
         return -1;
     }
 
-    int Fullcount = 0;
+    int fullCount = 0;
+    int partialCount = 0;
     while(std::getline(inFile, lineString))
     {
         int l1 = -1; int l2 = -1; int r1 = -1; int r2 = -1;
@@ -27,12 +28,17 @@ int main()
         //Full Overlap
         if((l1 >= r1 && l2 <= r2) || (r1 >= l1 && r2 <= l2))
         {
-            Fullcount++;
+            fullCount++;
         }
 
         //Partial Overlap
+        if (!(l2 < r1 || l1 > r2))
+        {
+            partialCount++;
+        }
     }
 
-    std::cout << Fullcount << std::endl;
+    std::cout << "Full Overlaps: " << fullCount << std::endl;
+    std::cout << "Partial Overlaps: " <<  partialCount << std::endl;
 }
 
