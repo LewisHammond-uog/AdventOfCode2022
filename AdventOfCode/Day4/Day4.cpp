@@ -21,18 +21,18 @@ int main()
     int partialCount = 0;
     while(std::getline(inFile, lineString))
     {
-        int l1 = -1; int l2 = -1; int r1 = -1; int r2 = -1;
+        int elf1Left = -1; int elf1Right = -1; int elf2Left = -1; int elf2Right = -1;
 
-        sscanf_s(lineString.c_str(), "%i-%i,%i-%i", &l1, &l2, &r1, &r2);
+        sscanf_s(lineString.c_str(), "%i-%i,%i-%i", &elf1Left, &elf1Right, &elf2Left, &elf2Right);
 
         //Full Overlap
-        if((l1 >= r1 && l2 <= r2) || (r1 >= l1 && r2 <= l2))
+        if((elf1Left >= elf2Left && elf1Right <= elf2Right) || (elf2Left >= elf1Left && elf2Right <= elf1Right))
         {
             fullCount++;
         }
 
         //Partial Overlap
-        if (!(l2 < r1 || l1 > r2))
+        if (!(elf1Right < elf2Left || elf1Left > elf2Right))
         {
             partialCount++;
         }
