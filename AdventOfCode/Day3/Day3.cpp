@@ -7,7 +7,9 @@
 
 int main()
 {
-    std::string lineString;
+    std::string lineString1;
+    std::string lineString2;
+    std::string lineString3;
     std::ifstream inFile;
 
     inFile.open("input.txt");
@@ -17,26 +19,40 @@ int main()
         return -1;
     }
 
-    while (getline(inFile, lineString))
-    {
-        int charCount = lineString.length();
+    int totalPrios = 0;
 
-        std::string firstPart = lineString.substr(0, charCount / 2);
-        std::string secondPart = lineString.substr(charCount / 2, charCount / 2);
+    while (getline(inFile, lineString1))
+    {
+        getline(inFile, lineString2);
+        getline(inFile, lineString3);
 
         char repeatChar = NULL;
-        for(unsigned int i = 0; i < firstPart.length(); ++i)
+        for(int i = 0; i < lineString1.length(); ++i)
         {
-	        if(secondPart.find(firstPart[i]) != -1)
-	        {
-                repeatChar = firstPart[i];
-                break;
-	        }
+	        const char checkChar = lineString1[i];
+            if(lineString2.find(checkChar) != -1 && lineString3.find(checkChar) != -1)
+            {
+                repeatChar = checkChar;
+            }
         }
 
         if(repeatChar == NULL)
         {
-            std::cout << "Did not find repeat char" << std::endl;
+            std::cout << "Didn't find repeat char" << std::endl;
+            return -1;
         }
+
+		//Determine Value
+        int val = 0;
+        if (repeatChar - 'a' >= 0) {
+            val = repeatChar - 'a' + 1;
+        }else
+        {
+            val = repeatChar - 'A' + 27;
+        }
+
+        totalPrios += val;
     }
+
+    std::cout << totalPrios << std::endl;
 }
