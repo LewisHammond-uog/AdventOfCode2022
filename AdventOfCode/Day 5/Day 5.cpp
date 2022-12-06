@@ -2,19 +2,81 @@
 //
 
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <map>
+#include <stack>
+
+#define LETTER_POS 1
+#define BLOCK_LEN 3
+#define BLOCK_LEN_WITH_SPACE BLOCK_LEN + 1
+#define BLOCK_STACK_COUNT 9
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    std::string lineString;
+    std::ifstream inFileStacks;
+    std::ifstream inFileInstructions;
+
+    inFileStacks.open("input_blocks.txt");
+    inFileInstructions.open("input_instructions.txt");
+
+    if (!inFileStacks.is_open() << !inFileInstructions.is_open())
+    {
+        std::cout << "Failed to open file" << std::endl;
+        return -1;
+    }
+
+    std::stack < std::string > stacks[BLOCK_STACK_COUNT];
+
+
+    //Read stacks
+    while (getline(inFileStacks, lineString)) 
+    {
+        int currentStack = 0;
+        for (int i = 0; i < lineString.length(); i += BLOCK_LEN_WITH_SPACE)
+        {
+            if (lineString[i] == ' ') {
+                ++currentStack;
+                continue;
+            }
+            
+            std::string item = std::string(1, lineString[i + LETTER_POS]);
+
+            stacks[currentStack].push(item);
+            ++currentStack;
+        }
+    }
+    inFileStacks.close();
+
+    //Read and execute instructions
+  
+    while (getline(inFileInstructions, lineString))
+    {
+        int numToMove = 0;
+        int stackFrom = 0;
+        int stackTo = 0;
+
+        sscanf_s(lineString.c_str(), "move %i from %i to %i", &numToMove, &stackFrom, &stackTo);
+
+        for (int i = 0; i < numToMove; ++i) 
+        {
+            //-1 because instructions are 1 indexed, stacks are 0 indexed
+            std::string moveChar = stacks[stackFrom - 1].top();
+            stacks[stackFrom - 1].pop();
+
+            stacks[stackTo - 1].push(moveChar);
+        }
+    }
+    inFileInstructions.close();
+
+    //List the tops of each stack
+    for (int i = 0; i < BLOCK_STACK_COUNT; ++i) 
+    {
+        std::cout << stacks[i].top();
+    }
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
