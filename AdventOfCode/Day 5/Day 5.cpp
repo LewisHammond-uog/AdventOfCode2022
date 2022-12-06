@@ -62,12 +62,23 @@ int main()
 
         sscanf_s(lineString.c_str(), "move %i from %i to %i", &numToMove, &stackFrom, &stackTo);
 
+        //Move from old stack
+        std::stack<std::string> tempMove;
         for (int i = 0; i < numToMove; ++i) 
         {
             //-1 because instructions are 1 indexed, stacks are 0 indexed
             std::string moveChar = stacks[stackFrom - 1].top();
             stacks[stackFrom - 1].pop();
 
+            tempMove.push(moveChar);
+        }
+
+        //Put on new stack
+        for (int i = 0; i < numToMove; ++i)
+        {
+            std::string moveChar = tempMove.top();
+            tempMove.pop();
+                
             stacks[stackTo - 1].push(moveChar);
         }
     }
