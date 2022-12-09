@@ -2,19 +2,58 @@
 //
 
 #include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <queue>
+
+#define MARKER_LOCATION 4
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    std::string lineString;
+    std::ifstream inFile;
+
+    inFile.open("input.txt");
+    if (!inFile.is_open())
+    {
+        std::cout << "Failed to open file" << std::endl;
+        return -1;
+    }
+
+    int count = 0;
+    char a;
+    std::deque<char> charQueue;
+    while (inFile >> a)
+    {
+        ++count;
+
+        charQueue.push_back(a);
+
+        //Check if the queue contains the current char, if it does not then we have a string of 4 unique characters
+        bool hasDupes = false;
+        if (charQueue.size() >= 4) {
+            //Check there are no repeat characters in the queue
+            for (int i = 0; i < charQueue.size(); ++i) 
+            {
+                if (std::count(charQueue.begin(), charQueue.end(), charQueue[i]) >= 2) 
+                {
+                    hasDupes = true;
+                    break;
+                }
+            }
+        }
+
+        if (!hasDupes && charQueue.size() >= 4)
+        {
+            std::cout << count;
+            break;
+        }
+
+        if (charQueue.size() >= 4) {
+            charQueue.pop_front();
+        }
+    }
+
+
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
