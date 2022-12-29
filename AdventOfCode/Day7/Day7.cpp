@@ -24,4 +24,5 @@ int main()
 
     std::cout << "TOTAL SIZE: " << m->GetSizeOf("/") << std::endl;
     std::cout << "SUM OF DIRS UNDER " << m->GetSumOfDirectories(100000) << std::endl;
+    std::cout << "SUM OF DIRS UNDER " << m->GetDirToDelete(70000000, 30000000) << std::endl;
 }

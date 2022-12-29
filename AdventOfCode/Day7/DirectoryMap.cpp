@@ -132,3 +132,24 @@ std::string DirectoryMap::GetParentDir(std::string dir)
 	int lastSlashIndex = dir.find_last_of('/');
 	return dir.substr(0, lastSlashIndex + 1);
 }
+
+int DirectoryMap::GetDirToDelete(int totalDiskSize, int requiredUpdateSize)
+{
+	auto iter = fileMap.find("/");
+	if (iter == fileMap.end()) {
+		return -1;
+	}
+
+	int usedSize = iter->second;
+	int deleteSize = abs(totalDiskSize - usedSize - requiredUpdateSize);
+	int smallestDirSize = usedSize;
+
+	for (auto it : fileMap) 
+	{
+		if (it.second > deleteSize && it.second < smallestDirSize) {
+			smallestDirSize = it.second;
+		}
+	}
+
+	return smallestDirSize;
+}
