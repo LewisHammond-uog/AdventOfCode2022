@@ -19,25 +19,27 @@ TreeGrid::TreeGrid(std::string gridString)
 	}
 }
 
-bool TreeGrid::TreeIsVisible(Vector2 loc)
+int TreeGrid::GetBestScore()
 {
-	return TreeIsVisibleInDir(loc, Direction::Up) || TreeIsVisibleInDir(loc, Direction::Down) || TreeIsVisibleInDir(loc, Direction::Left) || TreeIsVisibleInDir(loc, Direction::Right);
-}
-
-int TreeGrid::CountVisibleTrees()
-{
-	int count = 0;
-	for (int x = 0; x < maxBounds.x; ++x) 
+	int bestScore = 0;
+	for (int x = 0; x < maxBounds.x; x++)
 	{
-		for (int y = 0; y < maxBounds.y; ++y)
+		for (int y = 0; y < maxBounds.y; y++)
 		{
-			count += (int)TreeIsVisible(Vector2(x,y));
+			int currentScore = GetTreeScoreInDir(Vector2(x, y), Direction::Up) *
+				GetTreeScoreInDir(Vector2(x, y), Direction::Down) *
+				GetTreeScoreInDir(Vector2(x, y), Direction::Left) *
+				GetTreeScoreInDir(Vector2(x, y), Direction::Right);
+
+			bestScore = std::max(bestScore, currentScore);
 		}
 	}
-	return count;
+
+	return bestScore;
 }
 
-bool TreeGrid::TreeIsVisibleInDir(Vector2 pos, Direction dir)
+
+int TreeGrid::GetTreeScoreInDir(Vector2 pos, Direction dir)
 {
 	int xMove = 0;
 	int yMove = 0;
@@ -59,23 +61,26 @@ bool TreeGrid::TreeIsVisibleInDir(Vector2 pos, Direction dir)
 
 	Vector2 currentPos = pos;
 	currentPos = currentPos + Vector2(xMove, yMove);
+	int freeSpaces = 0;
 	while (PosIsInGrid(currentPos))
 	{
 		auto iter = grid.find(currentPos);
 		if (iter == grid.end()) {
 			std::cout << "ERROR, invalid pos" << std::endl;
-			return false;
+			return 0;
 		}
 
+		++freeSpaces;
 		int currentTreeScore = iter->second;
 		if (currentTreeScore >= targetTreeScore) {
-			return false;
+			return freeSpaces;
 		}
 
 		currentPos = currentPos + Vector2(xMove, yMove);
+
 	}
 
-	return true;
+	return freeSpaces;
 	
 }
 

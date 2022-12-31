@@ -33,14 +33,13 @@ class TreeGrid
 {
 public:
 	TreeGrid(std::string gridString);
-	bool TreeIsVisible(Vector2 loc);
-	int CountVisibleTrees();
+	int GetBestScore();
 
 private:
 	std::map<Vector2, int> grid;
 	Vector2 maxBounds = Vector2(0,0);
 
-	bool TreeIsVisibleInDir(Vector2 pos, Direction dir);
+	int GetTreeScoreInDir(Vector2 pos, Direction dir);
 	bool PosIsInGrid(Vector2 pos);
 };
 

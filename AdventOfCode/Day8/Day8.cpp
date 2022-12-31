@@ -26,7 +26,7 @@ int main()
 
     TreeGrid grid = TreeGrid(fileRead);
 
-    std::cout << grid.CountVisibleTrees();
+    std::cout << grid.GetBestScore();
 
 }
 
