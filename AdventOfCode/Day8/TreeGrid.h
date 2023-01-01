@@ -2,6 +2,8 @@
 
 #include <string>
 #include <map>
+#include <thread>
+#include <future>
 
 struct Vector2 {
 	Vector2(int xVal, int yVal) 
@@ -39,6 +41,7 @@ private:
 	std::map<Vector2, int> grid;
 	Vector2 maxBounds = Vector2(0,0);
 
+	int GetTreeScore(Vector2 pos);
 	int GetTreeScoreInDir(Vector2 pos, Direction dir);
 	bool PosIsInGrid(Vector2 pos);
 };

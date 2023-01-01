@@ -1,10 +1,13 @@
 #include "TreeGrid.h"
 
 #include <iostream>
+#include <vector>
+#include <thread>
+#include <future>
 
 TreeGrid::TreeGrid(std::string gridString)
 {
-	int rowCount = 99;
+	int rowCount = 990;
 	int collumCount = 99;
 
 	maxBounds = Vector2(rowCount, collumCount);
@@ -21,23 +24,40 @@ TreeGrid::TreeGrid(std::string gridString)
 
 int TreeGrid::GetBestScore()
 {
+	std::vector<std::future<int>> futures;
+	for (int x = 0; x < maxBounds.x; x++)
+	{
+		for (int y = 0; y < maxBounds.y; y++)
+		{
+			futures.push_back(std::async(std::launch::async, &TreeGrid::GetTreeScore, this, Vector2(x, y)));
+		}
+	}
+
 	int bestScore = 0;
 	for (int x = 0; x < maxBounds.x; x++)
 	{
 		for (int y = 0; y < maxBounds.y; y++)
 		{
-			int currentScore = GetTreeScoreInDir(Vector2(x, y), Direction::Up) *
-				GetTreeScoreInDir(Vector2(x, y), Direction::Down) *
-				GetTreeScoreInDir(Vector2(x, y), Direction::Left) *
-				GetTreeScoreInDir(Vector2(x, y), Direction::Right);
-
-			bestScore = std::max(bestScore, currentScore);
+			bestScore = std::max(bestScore, futures[y * maxBounds.x + x].get());
 		}
 	}
 
 	return bestScore;
 }
 
+
+int TreeGrid::GetTreeScore(Vector2 pos)
+{
+	int x = pos.x;
+	int y = pos.y;
+
+	int currentScore = GetTreeScoreInDir(Vector2(x, y), Direction::Up) *
+		GetTreeScoreInDir(Vector2(x, y), Direction::Down) *
+		GetTreeScoreInDir(Vector2(x, y), Direction::Left) *
+		GetTreeScoreInDir(Vector2(x, y), Direction::Right);
+
+	return currentScore;
+}
 
 int TreeGrid::GetTreeScoreInDir(Vector2 pos, Direction dir)
 {
